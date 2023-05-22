@@ -16,12 +16,20 @@ import os
 try:
 
     # Establish a connection
+    # conn = psycopg2.connect(
+    #     host=os.environ['PG_HOST'],
+    #     port= os.environ['PG_PORT'],
+    #     database=os.environ['PG_DATABASE'],
+    #     user=os.environ['PG_USER'],
+    #     password=os.environ['PG_PASSWORD']
+    # )
+
     conn = psycopg2.connect(
-        host=os.environ['PG_HOST'],
-        port= os.environ['PG_PORT'],
-        database=os.environ['PG_DATABASE'],
-        user=os.environ['PG_USER'],
-        password=os.environ['PG_PASSWORD']
+        host='database',
+        port= 5432,
+        database='postgres',
+        user='postgres',
+        password='postgres'
     )
 
     # conn = psycopg2.connect(os.environ['DATABASE_URL'])
