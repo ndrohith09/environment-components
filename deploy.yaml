@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fastapi-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fastapi-postgres
+  template:
+    metadata:
+      labels:
+        app: fastapi-postgres
+    spec:
+      containers:
+        - name: fastapi
+          image: your-fastapi-image:tag
+          ports:
+            - containerPort: 80
+          # Add other container settings as needed
+
+        - name: postgres
+          image: postgres:latest
+          ports:
+            - containerPort: 5432
+          env:
+            - name: POSTGRES_USER
+              value: your-db-username
+            - name: POSTGRES_PASSWORD
+              value: your-db-password
+            # Add other environment variables as needed
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fastapi-postgres-service
+spec:
+  selector:
+    app: fastapi-postgres
+  ports:
+    - name: http
+      protocol: TCP
+      port: 80
+      targetPort: 80
+    - name: postgres
+      protocol: TCP
+      port: 5432
+      targetPort: 5432
