@@ -16,21 +16,21 @@ import os
 try:
 
     # Establish a connection
-    # conn = psycopg2.connect(
-    #     host=os.environ['PG_HOST'],
-    #     port= os.environ['PG_PORT'],
-    #     database=os.environ['PG_DATABASE'],
-    #     user=os.environ['PG_USER'],
-    #     password=os.environ['PG_PASSWORD']
-    # )
-
     conn = psycopg2.connect(
-        host='database',
-        port= 5432,
-        database='postgres',
-        user='postgres',
-        password='postgres'
+        host=os.environ.get('PG_HOST'),
+        port= os.environ.get('PG_PORT'),
+        database=os.environ.get('PG_DATABASE'),
+        user=os.environ.get('PG_USER'),
+        password=os.environ.get('PG_PASSWORD')
     )
+
+    # conn = psycopg2.connect(
+    #     host='database',
+    #     port= 5432,
+    #     database='postgres',
+    #     user='postgres',
+    #     password='postgres'
+    # )
 
     # conn = psycopg2.connect(os.environ['DATABASE_URL'])
     cursor = conn.cursor()
@@ -58,8 +58,8 @@ async def get_books():
     books = []
     for course in course_list: 
             books.append(Book(id=course[0], title=course[1], instructor=course[2], publish_date=course[3]))
-    return books    
-
+    return books 
+   
 @strawberry.type
 class Book:
     id: str
@@ -72,11 +72,13 @@ class Query:
 
     @strawberry.field
     def environment(self, info: Info) -> str:
-        list = []
-        for key, value in os.environ.items():
-            list.append(key + " : " + value)
-        return str(list)
-        
+        # list = []
+        # for key, value in os.environ.items():
+        #     list.append(key + " : " + value)
+        #     # access the HOST 
+        # return str(list)
+        return os.environ.get('PG_HOST')
+
 
     all_books: typing.List[Book] = strawberry.field(resolver=get_books)
     
