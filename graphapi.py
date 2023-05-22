@@ -70,6 +70,14 @@ class Book:
 @strawberry.type
 class Query:
 
+    @strawberry.field
+    def environment(self, info: Info) -> str:
+        list = []
+        for key, value in os.environ.items():
+            list.append(key + " : " + value)
+        return str(list)
+        
+
     all_books: typing.List[Book] = strawberry.field(resolver=get_books)
     
     @strawberry.field
