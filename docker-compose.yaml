@@ -9,9 +9,8 @@ services:
       - PG_DATABASE=postgres
       - PG_USER=postgres
       - PG_PASSWORD=postgres 
-      - PG_PORT=5432
       - DATABASE_URL=postgresql://postgres:postgres@database:5432/postgres
-  
+
   database:
     image: postgres:13-alpine
     volumes:
