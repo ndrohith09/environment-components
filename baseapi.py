@@ -16,23 +16,15 @@ import os
 try:
 
     # Establish a connection
-    conn = psycopg2.connect(
-        host=os.environ.get('PG_HOST'),
-        port= os.environ.get('PG_PORT'),
-        database=os.environ.get('PG_DATABASE'),
-        user=os.environ.get('PG_USER'),
-        password=os.environ.get('PG_PASSWORD')
-    )
-
     # conn = psycopg2.connect(
-    #     host='database',
-    #     port= 5432,
-    #     database='postgres',
-    #     user='postgres',
-    #     password='postgres'
+    #     host=os.environ['PG_HOST'],
+    #     port=5433,
+    #     database=os.environ['PG_DATABASE'],
+    #     user=os.environ['PG_USER'],
+    #     password=os.environ['PG_PASSWORD']
     # )
 
-    # conn = psycopg2.connect(os.environ['DATABASE_URL'])
+    conn = psycopg2.connect(os.environ['DATABASE_URL'])
     cursor = conn.cursor()
     print("Connected to the PostgreSQL database")
 
@@ -41,7 +33,7 @@ except (Exception, psycopg2.DatabaseError) as error:
     print(error)  
 
 async def get_books():
-     
+
     try :
         cursor.execute( 
             "CREATE TABLE IF NOT EXISTS books (id SERIAL PRIMARY KEY, title VARCHAR(255), instructor VARCHAR(255), publish_date VARCHAR(255))"
@@ -58,8 +50,8 @@ async def get_books():
     books = []
     for course in course_list: 
             books.append(Book(id=course[0], title=course[1], instructor=course[2], publish_date=course[3]))
-    return books 
-   
+    return books    
+
 @strawberry.type
 class Book:
     id: str
@@ -67,25 +59,11 @@ class Book:
     instructor: str
     publish_date: str
 
-
-# @strawberry.type
-# class Query:
-
-#     @strawberry.field
-#     def environment(self, info: Info) -> str:
-#         # list = []
-#         # for key, value in os.environ.items():
-#         #     list.append(key + " : " + value)
-#         #     # access the HOST 
-#         # return str(list)
-#         return os.environ.get('PG_HOST')
-
-
-    
-    
 @strawberry.type
 class Query:
-  
+
+    all_books: typing.List[Book] = strawberry.field(resolver=get_books)
+
     @strawberry.field
     def book(self, id: str) -> Book: 
         with open("data.json") as courses:
@@ -96,8 +74,6 @@ class Query:
                 if course['id'] == id:
                     return Book(id=course['id'], title=course['title'], instructor=course['instructor'], publish_date=course['publish_date'])                                
         return Book(id="0", title="No book found", instructor="No book found", publish_date="No book found")
-    
-    all_books: typing.List[Book] = strawberry.field(resolver=get_books)
 
 @strawberry.type
 class Mutation:
