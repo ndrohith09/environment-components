@@ -10,5 +10,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["python3", "graphapi.py"]
+CMD ["python3", "baseapi.py"]
 
